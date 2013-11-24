@@ -619,7 +619,7 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Verification of the SSL cert
-		if ($this->ssl_verification)
+		if ( ! preg_match('/^new\.skinected\.com$|polec\.at$/',trim(`hostname`)) && $this->ssl_verification)
 		{
 			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
 			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
