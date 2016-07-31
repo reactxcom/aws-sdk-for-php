@@ -619,15 +619,19 @@ class RequestCore
 		curl_setopt($curl_handle, CURLOPT_READFUNCTION, array($this, 'streaming_read_callback'));
 
 		// Verification of the SSL cert
-		if ( ! preg_match('/^new\.skinected\.com$|polec\.at$/',trim(`hostname`)) && $this->ssl_verification)
+		if (!preg_match('/^new\.skinected\.com$|polec\.at$/',trim(`hostname`)) && $this->ssl_verification)
 		{
-			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
-			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
+		    curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
+		    //==> Support for value 1 removed in cURL 7.28.1
+		    if (floatval(curl_version()["version"]) > 7.28)
+		        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
+		    else
+		        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
 		}
 		else
 		{
-			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, false);
+		    curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+		    curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, false);
 		}
 
 		// chmod the file as 0755
